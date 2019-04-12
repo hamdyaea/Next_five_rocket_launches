@@ -1,6 +1,6 @@
 ![Awesome](awesome.svg) ![Python](python.png)  
 
-# Next fice rocket launches
+# Next five rocket launches
 
 ![Screenshot](screenshot.png)
 
