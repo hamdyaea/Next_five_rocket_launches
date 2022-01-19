@@ -1,0 +1,15 @@
+<div style="background-image: url('/static/img/back.jpg');"
+<p><span style="color: white;">Last update : {{  dateup  }}</span></p>
+<p>&nbsp;</p>
+<p><span style="color: white;">Number of news of Netflix in Switerland : {{  totalcount  }}</span></p>
+<p>&nbsp;</p>
+<p><span style="color: white;">List of news of the last 7 days in Netflix for Switzerland</span></p>
+<p>&nbsp;</p>
+{% for i in  movielist %}
+    <p><span style="color: white;">{{  i|safe  }}</span></p>
+{% endfor %}
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="color: white;">Developer : Hamdy Abou El Anein</span></p>
+<p><span style="color: white;">hamdy.aea@protonmail.com</span></p>
+<p><span style="color: white;">Source code : https://github.com/hamdyaea/Netflix_Flask/</span></p>
