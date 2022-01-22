@@ -14,20 +14,47 @@ app = Flask(__name__)
 @app.route("/")
 def main():
     try:
-        req = Request("https://ll.thespacedevs.com/2.2.0/launch/?format=json&last_updated__gte=&last_updated__lte=&mission__orbit__name=&mission__orbit__name__icontains=&name=&net__gt=&net__gte=&net__lt=&net__lte=&r_spacex_api_id=&rocket__configuration__full_name=&rocket__configuration__full_name__icontains=&rocket__configuration__id=&rocket__configuration__manufacturer__name=&rocket__configuration__manufacturer__name__icontains=&rocket__configuration__name=&rocket__spacecraftflight__spacecraft__id=&rocket__spacecraftflight__spacecraft__name=&rocket__spacecraftflight__spacecraft__name__icontains=&slug=&status=1&window_end__gt=&window_end__gte=&window_end__lt=&window_end__lte=&window_start__gt=&window_start__gte=&window_start__lt=&window_start__lte=", headers={'User-Agent': 'Mozilla/5.0'})
+        req = Request("https://astrometry.ch/rockets.json", headers={'User-Agent': 'Mozilla/5.0'})
         data = urlopen(req,timeout=10).read()
         Rocketlaunch = json.loads(data.decode())
         rocketlist = []
         for i in Rocketlaunch["results"]:
-            spacecraft = i["rocket"]["configuration"]["full_name"]
-            type = i["launch_service_provider"]["type"]
-            time = i["net"]
-            company = i["launch_service_provider"]["name"]
-            pic = i["image"] 
-            mission = i["mission"]["name"]
-            description = i["mission"]["description"]
-            type = i["mission"]["type"]
-            orbit = i["mission"]["orbit"]["name"]
+            try:
+                spacecraft = i["rocket"]["configuration"]["full_name"]
+            except:
+                spacecraft = ""
+            try:
+                type = i["launch_service_provider"]["type"]
+            except:
+                type = ""
+            try:
+                time = i["net"]
+            except:
+                time = ""
+            try:
+                company = i["launch_service_provider"]["name"]
+            except:
+                company = ""
+            try:
+                pic = i["image"] 
+            except:
+                pic = ""
+            try:
+                mission = i["mission"]["name"]
+            except:
+                mission = ""
+            try:
+                description = i["mission"]["description"]
+            except:
+                description = ""
+            try:
+                type = i["mission"]["type"]
+            except:
+                type = ""
+            try:
+                orbit = i["mission"]["orbit"]["name"]
+            except:
+                orbit = ""
         
             rocketlist.append(str("<p><strong>Spacecraft     </strong>")+str(spacecraft)+str("<br><strong>Type     </strong>")+str(type)+str("<br><strong>Launch time     </strong>")+str(time)+str("<br><strong>Rocket company     </strong>")+str(company)+str("<br><strong>Reason     </strong>")+str(mission)+str("<br><strong>Description     </strong>")+str(description)+str("<br><strong>Orbit     </strong>")+str(orbit)+str("</p>")+str('<img src=\"')+str(pic)+str('\" alt=\"Rocket picture\" align=\"left\" style=\"width:400px;height:300px;">')+str("<br><br><br><br><br><br><br><br><br><br><br><br><br>"))
         

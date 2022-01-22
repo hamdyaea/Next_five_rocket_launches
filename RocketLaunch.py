@@ -3,33 +3,59 @@
 # Developer : Hamdy Abou El Anein
 # hamdy.aea@protonmail.com
 
-# This Python3 software print in the terminal the next five rocket launch. The data is updated at every run.
+# This Python3 software print in the terminal the next rockets launch. The data is updated at every run.
 
 from urllib.request import Request, urlopen
 import json
 
 
 def main():
-    req = Request("https://ll.thespacedevs.com/2.2.0/launch/?format=json&last_updated__gte=&last_updated__lte=&mission__orbit__name=&mission__orbit__name__icontains=&name=&net__gt=&net__gte=&net__lt=&net__lte=&r_spacex_api_id=&rocket__configuration__full_name=&rocket__configuration__full_name__icontains=&rocket__configuration__id=&rocket__configuration__manufacturer__name=&rocket__configuration__manufacturer__name__icontains=&rocket__configuration__name=&rocket__spacecraftflight__spacecraft__id=&rocket__spacecraftflight__spacecraft__name=&rocket__spacecraftflight__spacecraft__name__icontains=&slug=&status=1&window_end__gt=&window_end__gte=&window_end__lt=&window_end__lte=&window_start__gt=&window_start__gte=&window_start__lt=&window_start__lte=", headers={'User-Agent': 'Mozilla/5.0'})
+    req = Request("https://astrometry.ch/rockets.json", headers={'User-Agent': 'Mozilla/5.0'})
     data = urlopen(req,timeout=10).read()
     Rocketlaunch = json.loads(data.decode())
     for i in Rocketlaunch["results"]:
-        spacecraft = i["rocket"]["configuration"]["full_name"]
-        type = i["launch_service_provider"]["type"]
-        time = i["net"]
-        company = i["launch_service_provider"]["name"]
-        pic = i["image"] 
-        mission = i["mission"]["name"]
-        description = i["mission"]["description"]
-        type = i["mission"]["type"]
-        orbit = i["mission"]["orbit"]["name"]
- 
+        try:
+            spacecraft = i["rocket"]["configuration"]["full_name"]
+        except:
+            spacecraft = ""
+        try:
+            type = i["launch_service_provider"]["type"]
+        except:
+            type = ""
+        try:        
+            time = i["net"]
+        except:
+            time = ""
+        try:
+            company = i["launch_service_provider"]["name"]
+        except:
+            company = ""
+        try:
+            pic = i["image"] 
+        except:
+            pic = ""       
+        try:
+            mission1 = i["mission"]["name"]
+        except:
+            mission1 = ""
+        try:
+            description = i["mission"]["description"]
+        except:
+            description = ""
+        try:
+            type = i["mission"]["type"]
+        except:
+            type = ""       
+        try:        
+            orbit = i["mission"]["orbit"]["name"]
+        except:
+            orbit = ""
         print(spacecraft)
         print(type)
         print(time)
         print(company)
         print(pic)
-        print(mission)
+        print(mission1)
         print(description)
         print(type)
         print(orbit)
