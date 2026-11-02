@@ -1,69 +1,64 @@
 #!/usr/bin/env python3
-
-# Developer : Hamdy Abou El Anein
-# hamdy.aea@protonmail.com
-
-# This Python3 software print in the terminal the next rockets launch. The data is updated at every run.
-
-from urllib.request import Request, urlopen
+# Developer: Hamdy Abou El Anein
+# Contact: info@daylightlinux.ch
+# SPDX-License-Identifier: GPL-3.0-only
+"""Read upcoming rocket launches from a configurable JSON API."""
+from __future__ import annotations
+import argparse
 import json
+from urllib.request import Request, urlopen
 
+DEFAULT_URL = "https://astrometry.ch/rockets.json"
 
-def main():
-    req = Request("https://astrometry.ch/rockets.json", headers={'User-Agent': 'Mozilla/5.0'})
-    data = urlopen(req,timeout=10).read()
-    Rocketlaunch = json.loads(data.decode())
-    for i in Rocketlaunch["results"]:
-        try:
-            spacecraft = i["rocket"]["configuration"]["full_name"]
-        except:
-            spacecraft = ""
-        try:
-            type = i["launch_service_provider"]["type"]
-        except:
-            type = ""
-        try:        
-            time = i["net"]
-        except:
-            time = ""
-        try:
-            company = i["launch_service_provider"]["name"]
-        except:
-            company = ""
-        try:
-            pic = i["image"] 
-        except:
-            pic = ""       
-        try:
-            mission1 = i["mission"]["name"]
-        except:
-            mission1 = ""
-        try:
-            description = i["mission"]["description"]
-        except:
-            description = ""
-        try:
-            type = i["mission"]["type"]
-        except:
-            type = ""       
-        try:        
-            orbit = i["mission"]["orbit"]["name"]
-        except:
-            orbit = ""
-        print(spacecraft)
-        print(type)
-        print(time)
-        print(company)
-        print(pic)
-        print(mission1)
-        print(description)
-        print(type)
-        print(orbit)
-        print("\n")
+def fetch_launches(url: str = DEFAULT_URL, timeout: int = 10) -> dict:
+    if not url.startswith("https://"):
+        raise ValueError("Only HTTPS endpoints are supported")
+    request = Request(url, headers={"User-Agent": "RocketLaunch/2.0"})
+    with urlopen(request, timeout=timeout) as response:
+        payload = response.read(2_000_001)
+    if len(payload) > 2_000_000:
+        raise ValueError("Response exceeds 2 MB")
+    data = json.loads(payload)
+    if not isinstance(data, dict) or not isinstance(data.get("results"), list):
+        raise ValueError("Expected API JSON object containing results list")
+    return data
 
-    num = Rocketlaunch["count"]
-    print("Number of Rockets")
-    print(num)
+def summarize(item: dict) -> dict[str, str]:
+    def nested(*keys):
+        value = item
+        for key in keys:
+            if not isinstance(value, dict):
+                return ""
+            value = value.get(key)
+        return str(value) if value is not None else ""
+    return {
+        "Rocket": nested("rocket", "configuration", "full_name"),
+        "Launch time": nested("net"),
+        "Provider": nested("launch_service_provider", "name"),
+        "Mission": nested("mission", "name"),
+        "Mission type": nested("mission", "type"),
+        "Orbit": nested("mission", "orbit", "name"),
+        "Description": nested("mission", "description"),
+    }
 
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--url", default=DEFAULT_URL)
+    parser.add_argument("--limit", type=int, default=5)
+    args = parser.parse_args()
+    if not 1 <= args.limit <= 100:
+        parser.error("--limit must be between 1 and 100")
+    try:
+        data = fetch_launches(args.url)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        parser.error(str(exc))
+    for index, item in enumerate(data["results"][:args.limit], start=1):
+        if not isinstance(item, dict):
+            continue
+        print(f"\nLaunch {index}")
+        for label, value in summarize(item).items():
+            print(f"{label}: {value}")
+    print(f"API total: {data.get('count', 'unknown')}")
 
-main()
+if __name__ == "__main__":
+    main()
