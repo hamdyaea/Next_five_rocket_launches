@@ -1,31 +1,17 @@
-![Awesome](awesome.svg) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)  ![Python](python.png)  
+# Next Five Rocket Launches
 
-# Next confirmed rocket launches
+**Developer:** Hamdy Abou El Anein  
+**Contact:** info@daylightlinux.ch  
+**License:** GPL v3 (see LICENSE).
 
-![Screenshot](screenshot.png)
-
-## What's this software ?  
-
-This python 3 software download and display the next confirmed rocket launches.
-
-This software is for aerospace enthusiast who do not want to miss a live rocket launch.
-     
-Now it's not anymore the FIVE next because I take only the confirmed launches.    
-
-## How to launch this software :  
+A Python 3 command-line tool to display upcoming launches from a JSON API. HTTPS only, network timeout, maximum response size, robust optional-field handling and a configurable display limit. No third-party Python dependencies.
 
 ```sh
 python3 RocketLaunch.py
-```  
+python3 RocketLaunch.py --limit 10
+python3 -m unittest discover -s tests -v
+```
 
-## Requirements :
+The default feed is `https://astrometry.ch/rockets.json`; its availability, accuracy and freshness depend on the external provider. Network integration is not part of the offline unit tests.
 
-Python 3
-
-## Developer - Author
-
-Hamdy Abou El Anein
-
-## Homepage
-
-https://rocketfly.vercel.app/     
+Historical code: [old branch](https://github.com/hamdyaea/Next_five_rocket_launches/tree/old).
